@@ -218,3 +218,10 @@ NEXT SESSION:
 
 ═══════════════════════════════════════════════
 
+Session 3 - 01 March 2026
+Built highway road network using scenariogeneration library.
+500m 4-lane road, 2 forward 2 backward, shoulders 3m each side.
+Lane width 3.75m Dutch motorway standard.
+Validated in esmini odrviewer - cars visible on correct lanes.
+Pushed stage1_highway.py to GitHub.
+Next: add entry and exit ramps.
