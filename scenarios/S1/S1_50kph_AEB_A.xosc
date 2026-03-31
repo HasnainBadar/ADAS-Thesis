@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSCENARIO>
+  <FileHeader description="S1 AEB stationary lead 50kph" author="HasnainBadar" revMajor="1" revMinor="2" date="2026-03-25T00:00:00"/>
+  <ParameterDeclarations/>
+  <CatalogLocations/>
+  <RoadNetwork>
+    <LogicFile filepath="C:/adas-thesis/maps/adas_network.xodr"/>
+  </RoadNetwork>
+  <Entities>
+    <ScenarioObject name="Ego">
+      <Vehicle name="car_white" vehicleCategory="car">
+        <BoundingBox>
+          <Center x="1.4" y="0.0" z="0.75"/>
+          <Dimensions width="2.0" length="4.5" height="1.5"/>
+        </BoundingBox>
+        <Performance maxSpeed="40" maxAcceleration="10" maxDeceleration="10"/>
+        <Axles>
+          <FrontAxle maxSteering="0.5" wheelDiameter="0.6" trackWidth="1.8" positionX="3.1" positionZ="0.3"/>
+          <RearAxle  maxSteering="0.0" wheelDiameter="0.6" trackWidth="1.8" positionX="0.0" positionZ="0.3"/>
+        </Axles>
+        <Properties>
+          <Property name="model3d" value="car_white.osgb"/>
+          <Property name="scaleMode" value="BBToModel"/>
+        </Properties>
+      </Vehicle>
+    </ScenarioObject>
+    <ScenarioObject name="LeadVehicle">
+      <Vehicle name="car_red" vehicleCategory="car">
+        <BoundingBox>
+          <Center x="1.4" y="0.0" z="0.75"/>
+          <Dimensions width="2.0" length="4.5" height="1.5"/>
+        </BoundingBox>
+        <Performance maxSpeed="0" maxAcceleration="0" maxDeceleration="0"/>
+        <Axles>
+          <FrontAxle maxSteering="0.5" wheelDiameter="0.6" trackWidth="1.8" positionX="3.1" positionZ="0.3"/>
+          <RearAxle  maxSteering="0.0" wheelDiameter="0.6" trackWidth="1.8" positionX="0.0" positionZ="0.3"/>
+        </Axles>
+        <Properties>
+          <Property name="model3d" value="car_red.osgb"/>
+          <Property name="scaleMode" value="BBToModel"/>
+        </Properties>
+      </Vehicle>
+    </ScenarioObject>
+  </Entities>
+  <Storyboard>
+    <Init>
+      <Actions>
+        <Private entityRef="Ego">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <LanePosition roadId="1" laneId="-1" s="150" offset="0"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+          <PrivateAction>
+            <LongitudinalAction>
+              <SpeedAction>
+                <SpeedActionDynamics dynamicsShape="step" value="0" dynamicsDimension="time"/>
+                <SpeedActionTarget>
+                  <AbsoluteTargetSpeed value="13.89"/>
+                </SpeedActionTarget>
+              </SpeedAction>
+            </LongitudinalAction>
+          </PrivateAction>
+        </Private>
+        <Private entityRef="LeadVehicle">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <!-- Lead at s=400, ego at s=150 — initial gap 250m -->
+                <LanePosition roadId="1" laneId="-1" s="400" offset="0"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+          <PrivateAction>
+            <LongitudinalAction>
+              <SpeedAction>
+                <SpeedActionDynamics dynamicsShape="step" value="0" dynamicsDimension="time"/>
+                <SpeedActionTarget>
+                  <AbsoluteTargetSpeed value="0"/>
+                </SpeedActionTarget>
+              </SpeedAction>
+            </LongitudinalAction>
+          </PrivateAction>
+        </Private>
+      </Actions>
+    </Init>
+
+    <Story name="S1_story">
+      <Act name="S1_act">
+        <ManeuverGroup name="S1_mg" maximumExecutionCount="1" actorRef="Ego">
+          <Actors selectTriggeringEntities="false">
+            <EntityRef entityRef="Ego"/>
+          </Actors>
+          <Maneuver name="S1_maneuver">
+
+            <!-- Ego holds 13.89 m/s (50 kph) from t=0 -->
+            <Event name="DriveConstant" priority="override">
+              <Action>
+                <PrivateAction>
+                  <LongitudinalAction>
+                    <SpeedAction>
+                      <SpeedActionDynamics dynamicsShape="step" value="0" dynamicsDimension="time"/>
+                      <SpeedActionTarget>
+                        <AbsoluteTargetSpeed value="13.89"/>
+                      </SpeedActionTarget>
+                    </SpeedAction>
+                  </LongitudinalAction>
+                </PrivateAction>
+              </Action>
+              <StartTrigger>
+                <ConditionGroup>
+                  <Condition name="SimStart" delay="0" conditionEdge="none">
+                    <ByValueCondition>
+                      <SimulationTimeCondition value="0" rule="greaterOrEqual"/>
+                    </ByValueCondition>
+                  </Condition>
+                </ConditionGroup>
+              </StartTrigger>
+            </Event>
+
+            <!-- AEB fires when TTC first drops below 2.5s
+                 At 50kph (13.89 m/s) TTC=2.5s → gap ~34.7m from lead front
+                 conditionEdge="rising": triggers once when condition becomes true
+                 Brake: linear decel over 2s (approx 7 m/s² — realistic AEB) -->
+            <Event name="AEB_Brake" priority="override">
+              <Action>
+                <PrivateAction>
+                  <LongitudinalAction>
+                    <SpeedAction>
+                      <SpeedActionDynamics dynamicsShape="linear" value="2" dynamicsDimension="time"/>
+                      <SpeedActionTarget>
+                        <AbsoluteTargetSpeed value="0"/>
+                      </SpeedActionTarget>
+                    </SpeedAction>
+                  </LongitudinalAction>
+                </PrivateAction>
+              </Action>
+              <StartTrigger>
+                <ConditionGroup>
+                  <Condition name="TTC_threshold" delay="0" conditionEdge="rising">
+                    <ByEntityCondition>
+                      <TriggeringEntities triggeringEntitiesRule="any">
+                        <EntityRef entityRef="Ego"/>
+                      </TriggeringEntities>
+                      <EntityCondition>
+                        <TimeToCollisionCondition value="2.5" rule="lessThan" freespace="false">
+                          <TimeToCollisionConditionTarget>
+                            <EntityRef entityRef="LeadVehicle"/>
+                          </TimeToCollisionConditionTarget>
+                        </TimeToCollisionCondition>
+                      </EntityCondition>
+                    </ByEntityCondition>
+                  </Condition>
+                </ConditionGroup>
+              </StartTrigger>
+            </Event>
+
+          </Maneuver>
+        </ManeuverGroup>
+
+        <StartTrigger>
+          <ConditionGroup>
+            <Condition name="ActStart" delay="0" conditionEdge="none">
+              <ByValueCondition>
+                <SimulationTimeCondition value="0" rule="greaterOrEqual"/>
+              </ByValueCondition>
+            </Condition>
+          </ConditionGroup>
+        </StartTrigger>
+
+        <StopTrigger>
+          <!-- Stop after ego halts — MinTime=20s ensures ego reaches lead first -->
+          <ConditionGroup>
+            <Condition name="MinTime" delay="0" conditionEdge="none">
+              <ByValueCondition>
+                <SimulationTimeCondition value="20" rule="greaterOrEqual"/>
+              </ByValueCondition>
+            </Condition>
+            <Condition name="EgoStopped" delay="1" conditionEdge="none">
+              <ByEntityCondition>
+                <TriggeringEntities triggeringEntitiesRule="any">
+                  <EntityRef entityRef="Ego"/>
+                </TriggeringEntities>
+                <EntityCondition>
+                  <SpeedCondition value="0.5" rule="lessThan"/>
+                </EntityCondition>
+              </ByEntityCondition>
+            </Condition>
+          </ConditionGroup>
+          <!-- Safety fallback -->
+          <ConditionGroup>
+            <Condition name="MaxTime" delay="0" conditionEdge="none">
+              <ByValueCondition>
+                <SimulationTimeCondition value="60" rule="greaterOrEqual"/>
+              </ByValueCondition>
+            </Condition>
+          </ConditionGroup>
+        </StopTrigger>
+
+      </Act>
+    </Story>
+
+    <StopTrigger>
+      <ConditionGroup>
+        <Condition name="SimEnd" delay="0" conditionEdge="rising">
+          <ByValueCondition>
+            <StoryboardElementStateCondition storyboardElementRef="S1_act" storyboardElementType="act" state="completeState"/>
+          </ByValueCondition>
+        </Condition>
+      </ConditionGroup>
+    </StopTrigger>
+
+  </Storyboard>
+</OpenSCENARIO>

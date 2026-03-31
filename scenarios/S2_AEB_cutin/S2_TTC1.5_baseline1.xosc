@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSCENARIO>
+   <FileHeader revMajor="1"
+               revMinor="0"
+               date="2025-01-01T00:00:00"
+               description="S2 TTC1.5 baseline - cut-in NPC no AEB"
+               author="HasnainBadar"/>
+
+   <ParameterDeclarations>
+      <ParameterDeclaration name="HostVehicle"   parameterType="string" value="car_white"/>
+      <ParameterDeclaration name="TargetVehicle" parameterType="string" value="car_red"/>
+   </ParameterDeclarations>
+
+   <CatalogLocations>
+      <VehicleCatalog>
+         <Directory path="C:/esmini/resources/xosc/Catalogs/Vehicles"/>
+      </VehicleCatalog>
+   </CatalogLocations>
+
+   <RoadNetwork>
+      <LogicFile filepath="C:/adas-thesis/maps/adas_network.xodr"/>
+   </RoadNetwork>
+
+   <Entities>
+      <ScenarioObject name="Ego">
+         <CatalogReference catalogName="VehicleCatalog" entryName="$HostVehicle"/>
+      </ScenarioObject>
+      <ScenarioObject name="NPC">
+         <CatalogReference catalogName="VehicleCatalog" entryName="$TargetVehicle"/>
+      </ScenarioObject>
+   </Entities>
+
+   <Storyboard>
+      <Init>
+         <Actions>
+            <!-- Ego: Road 1, lane -1, s=50, 80 kph = 22.22 m/s -->
+            <Private entityRef="Ego">
+               <PrivateAction>
+                  <LongitudinalAction>
+                     <SpeedAction>
+                        <SpeedActionDynamics dynamicsShape="step" dynamicsDimension="time" value="0.0"/>
+                        <SpeedActionTarget>
+                           <AbsoluteTargetSpeed value="22.22"/>
+                        </SpeedActionTarget>
+                     </SpeedAction>
+                  </LongitudinalAction>
+               </PrivateAction>
+               <PrivateAction>
+                  <TeleportAction>
+                     <Position>
+                        <LanePosition roadId="1" laneId="-1" offset="0" s="50"/>
+                     </Position>
+                  </TeleportAction>
+               </PrivateAction>
+            </Private>
+
+            <!-- NPC: Road 1, lane -2 (adjacent same-direction lane), s=20 (30m behind Ego) -->
+            <!-- Drives faster at 26 m/s so it catches up and overtakes Ego -->
+            <Private entityRef="NPC">
+               <PrivateAction>
+                  <LongitudinalAction>
+                     <SpeedAction>
+                        <SpeedActionDynamics dynamicsShape="step" dynamicsDimension="time" value="0.0"/>
+                        <SpeedActionTarget>
+                           <AbsoluteTargetSpeed value="26.0"/>
+                        </SpeedActionTarget>
+                     </SpeedAction>
+                  </LongitudinalAction>
+               </PrivateAction>
+               <PrivateAction>
+                  <TeleportAction>
+                     <Position>
+                        <LanePosition roadId="1" laneId="-2" offset="0" s="20"/>
+                     </Position>
+                  </TeleportAction>
+               </PrivateAction>
+            </Private>
+         </Actions>
+      </Init>
+
+      <Story name="CutInStory">
+         <ParameterDeclarations>
+            <ParameterDeclaration parameterType="string" name="owner" value="NPC"/>
+         </ParameterDeclarations>
+
+         <Act name="CutInAct">
+            <ManeuverGroup maximumExecutionCount="1" name="CutInSequence">
+               <Actors selectTriggeringEntities="false">
+                  <EntityRef entityRef="$owner"/>
+               </Actors>
+
+               <Maneuver name="CutInManeuver">
+                  <!-- Step 1: cut into Ego lane at t=10s -->
+                  <Event name="CutInEvent" priority="overwrite" maximumExecutionCount="1">
+                     <Action name="CutInAction">
+                        <PrivateAction>
+                           <LateralAction>
+                              <LaneChangeAction>
+                                 <LaneChangeActionDynamics dynamicsShape="sinusoidal" value="2.0" dynamicsDimension="time"/>
+                                 <LaneChangeTarget>
+                                    <RelativeTargetLane entityRef="Ego" value="0"/>
+                                 </LaneChangeTarget>
+                              </LaneChangeAction>
+                           </LateralAction>
+                        </PrivateAction>
+                     </Action>
+                     <StartTrigger>
+                        <ConditionGroup>
+                           <Condition name="CutInStartCondition" delay="0" conditionEdge="rising">
+                              <ByValueCondition>
+                                 <SimulationTimeCondition value="10" rule="greaterThan"/>
+                              </ByValueCondition>
+                           </Condition>
+                        </ConditionGroup>
+                     </StartTrigger>
+                  </Event>
+                  <!-- Step 2: brake hard after cutting in — Ego closes fast, dangerous TTC -->
+                  <Event name="BrakeEvent" priority="overwrite" maximumExecutionCount="1">
+                     <Action name="BrakeAction">
+                        <PrivateAction>
+                           <LongitudinalAction>
+                              <SpeedAction>
+                                 <SpeedActionDynamics dynamicsShape="linear" value="-5" dynamicsDimension="rate"/>
+                                 <SpeedActionTarget>
+                                    <AbsoluteTargetSpeed value="10.0"/>
+                                 </SpeedActionTarget>
+                              </SpeedAction>
+                           </LongitudinalAction>
+                        </PrivateAction>
+                     </Action>
+                     <StartTrigger>
+                        <ConditionGroup>
+                           <!-- t=13s: lane change finishes at t=12s (10+2s), brake starts after -->
+                           <Condition name="BrakeStartCondition" delay="0" conditionEdge="rising">
+                              <ByValueCondition>
+                                 <SimulationTimeCondition value="13" rule="greaterThan"/>
+                              </ByValueCondition>
+                           </Condition>
+                        </ConditionGroup>
+                     </StartTrigger>
+                  </Event>
+               </Maneuver>
+            </ManeuverGroup>
+
+            <StartTrigger>
+               <ConditionGroup>
+                  <Condition name="CutInActStart" delay="0" conditionEdge="rising">
+                     <ByValueCondition>
+                        <SimulationTimeCondition value="0" rule="greaterThan"/>
+                     </ByValueCondition>
+                  </Condition>
+               </ConditionGroup>
+            </StartTrigger>
+         </Act>
+      </Story>
+
+      <StopTrigger>
+         <ConditionGroup>
+            <Condition name="MaxTime" delay="0" conditionEdge="none">
+               <ByValueCondition>
+                  <SimulationTimeCondition value="30" rule="greaterThan"/>
+               </ByValueCondition>
+            </Condition>
+         </ConditionGroup>
+      </StopTrigger>
+   </Storyboard>
+</OpenSCENARIO>

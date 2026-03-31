@@ -1,0 +1,123 @@
+esmini GIT REV: v2.60.0-0-77b4bbc0
+esmini GIT TAG: v2.60.0
+esmini GIT BRANCH: tags/v2.60.0^0
+esmini BUILD VERSION: 5977
+[] [info] Loaded config file: C:\esmini\config.yml (C:\esmini\bin\..\config.yml)
+[] [info] Loaded C:\adas-thesis\scenarios\S2_AEB_cutin\S2_TTC1.5_AEB_A.xosc
+[2026-03-30 15:58:50]
+[] [info] Player options: --osc C:\adas-thesis\scenarios\S2_AEB_cutin\S2_TTC1.5_AEB_A.xosc --camera_mode orbit --ground_plane auto --info_text 1 --logfile_path log.txt --log_level info --text_scale 1.0 --traj_filter 0.1 
+[] [info] No fixed timestep specified - running in realtime speed
+[] [info] Generated seed 818526189
+[] [info] Loading C:/adas-thesis/scenarios/S2_AEB_cutin/S2_TTC1.5_AEB_A.xosc (v1.0)
+[] [info] 0 variables
+[] [info] Signal Type 1000001.10 doesn't exists for country de
+[] [info] Loaded OpenDRIVE: C:/adas-thesis/maps/adas_network.xodr
+[] [info] Expr ${250/3.6} = 250/3.6 = 69.4444444444
+[] [warn] Info: "override" priority was introduced in v1.2. Use "overwrite" for earlier versions. Accepting it anyway.
+[] [warn] Info: "override" priority was introduced in v1.2. Use "overwrite" for earlier versions. Accepting it anyway.
+[] [info] 2 parameters:
+[] [info]    TargetVehicle = car_red
+[] [info]    HostVehicle = car_white
+[0.000] [info] Window created at 60,60 with size 800,600
+[0.000] [info] Generating a simplistic 3D model of the road network
+[0.000] [info] Road signal 3D model search paths attempted for file de_1000001_10.osgb:
+[0.000] [info]   de_1000001_10.osgb
+[0.000] [info]   C:/adas-thesis/maps/../models/./de_1000001_10.osgb
+[0.000] [info]   C:\esmini\bin/../resources/models/./de_1000001_10.osgb
+[0.000] [warn] Road signal 3D model de_1000001_10.osgb not located, using specified file path
+[0.000] [info] Road signal 3D model search paths attempted for file traffic_light_junction.osgb:
+[0.000] [info]   traffic_light_junction.osgb
+[0.000] [info]   C:/adas-thesis/maps/../models/./traffic_light_junction.osgb
+[0.000] [info]   C:\esmini\bin/../resources/models/./traffic_light_junction.osgb
+[0.000] [warn] Road signal 3D model traffic_light_junction.osgb not located, using specified file path
+[0.000] [info] Road object 3D model search paths attempted for file crosswalk_S3.osgb:
+[0.000] [info]   crosswalk_S3.osgb
+[0.000] [info]   C:/adas-thesis/maps/../models/./crosswalk_S3.osgb
+[0.000] [info]   C:\esmini\bin/../resources/models/./crosswalk_S3.osgb
+[0.000] [warn] Road object 3D model crosswalk_S3.osgb not located, using specified file path
+[0.000] [warn] Failed to load road object model file: crosswalk_S3.osgb (crosswalk_S3). Creating a bounding box as stand in.
+[0.000] [info] Adjusted NPC bounding box to model car_red.osgb - xyz: 1.46, 0.00, 0.77 lwh: 5.04, 2.04, 1.49
+[0.000] [info] Init Ego LongitudinalAction initState -> startTransition -> runningState
+[0.000] [info] Init Ego TeleportAction initState -> startTransition -> runningState
+[0.000] [info] Starting teleport Action
+[0.000] [info] Ego New position:
+[0.000] [info] Pos(-394.19, -86.37, 0.00) Rot(3.89, 0.00, 0.00) roadId 1 laneId -1 s 50.00 offset 0.00 t -1.88
+[0.000] [info] Init NPC LongitudinalAction initState -> startTransition -> runningState
+[0.000] [info] Init NPC TeleportAction initState -> startTransition -> runningState
+[0.000] [info] Starting teleport Action
+[0.000] [info] NPC New position:
+[0.000] [info] Pos(-374.80, -63.18, 0.00) Rot(3.89, 0.00, 0.00) roadId 1 laneId -2 s 20.00 offset 0.00 t -5.62
+[0.000] [info] storyBoard initState -> startTransition -> runningState
+[0.000] [info] S2_Story initState -> startTransition -> runningState
+[0.000] [info] NPC_CutIn_Act initState -> initToStandbyTransition -> standbyState
+[0.000] [info] Ego_AEB_Act initState -> initToStandbyTransition -> standbyState
+[0.000] [info] NPC_ActStart: true, delay: 0.00, 0.0000 >= 0.0000, edge: none
+[0.000] [info] Trigger /------------------------------------------------
+[0.000] [info] Group 0:
+[0.000] [info] NPC_ActStart: true
+[0.000] [info] Trigger  ------------------------------------------------/
+[0.000] [info] NPC_CutIn_Act standbyState -> startTransition -> runningState
+[0.000] [info] NPC_MG initState -> startTransition -> runningState
+[0.000] [info] NPC_Maneuver initState -> startTransition -> runningState
+[0.000] [info] CutInEvent initState -> initToStandbyTransition -> standbyState
+[0.000] [info] NPCBrakeEvent initState -> initToStandbyTransition -> standbyState
+[0.000] [info] Init Ego LongitudinalAction runningState -> endTransition -> completeState
+[0.000] [info] Init Ego TeleportAction runningState -> endTransition -> completeState
+[0.000] [info] Init NPC LongitudinalAction runningState -> endTransition -> completeState
+[0.000] [info] Init NPC TeleportAction runningState -> endTransition -> completeState
+[10.012] [info] CutInTime: true, delay: 0.00, 10.0124 > 10.0000, edge: rising
+[10.012] [info] Trigger /------------------------------------------------
+[10.012] [info] Group 0:
+[10.012] [info] CutInTime: true
+[10.012] [info] Trigger  ------------------------------------------------/
+[10.012] [info] CutInEvent standbyState -> startTransition -> runningState
+[10.012] [info] CutInAction initState -> startTransition -> runningState
+[10.012] [info] NPCBrakeTime: true, delay: 2.00, CutInEvent, RUNNING / START_TRANSITION == START_TRANSITION, edge: rising
+[10.029] [info] NPCBrakeTime: false, delay: 2.00, CutInEvent, RUNNING / UNDEFINED_TRANSITION == START_TRANSITION, edge: rising
+[11.995] [info] CutInAction runningState -> endTransition -> completeState
+[11.995] [info] CutInEvent complete after 1 execution
+[11.995] [info] CutInEvent runningState -> endTransition -> completeState
+[12.029] [info] Trigger /------------------------------------------------
+[12.029] [info] Group 0:
+[12.029] [info] NPCBrakeTime: true
+[12.029] [info] Trigger  ------------------------------------------------/
+[12.029] [info] NPCBrakeEvent standbyState -> startTransition -> runningState
+[12.029] [info] NPCBrakeAction initState -> startTransition -> runningState
+[13.012] [info] MinTime: true, delay: 0.00, 13.0123 >= 13.0000, edge: none
+[13.012] [info] Ego_ActStart: true, delay: 0.00, 13.0123 > 13.0000, edge: rising
+[13.012] [info] Trigger /------------------------------------------------
+[13.012] [info] Group 0:
+[13.012] [info] Ego_ActStart: true
+[13.012] [info] Trigger  ------------------------------------------------/
+[13.012] [info] Ego_AEB_Act standbyState -> startTransition -> runningState
+[13.012] [info] Ego_MG initState -> startTransition -> runningState
+[13.012] [info] Ego_Maneuver initState -> startTransition -> runningState
+[13.012] [info] DriveConstant initState -> initToStandbyTransition -> standbyState
+[13.012] [info] AEB_Brake initState -> initToStandbyTransition -> standbyState
+[13.012] [info] SimStart: true, delay: 0.00, 13.0123 >= 0.0000, edge: none
+[13.012] [info] Trigger /------------------------------------------------
+[13.012] [info] Group 0:
+[13.012] [info] SimStart: true
+[13.012] [info] Trigger  ------------------------------------------------/
+[13.012] [info] DriveConstant standbyState -> startTransition -> runningState
+[13.012] [info] no name initState -> startTransition -> runningState
+[13.012] [info] no name runningState -> endTransition -> completeState
+[13.012] [info] DriveConstant complete after 1 execution
+[13.012] [info] DriveConstant runningState -> endTransition -> completeState
+[13.878] [info] TTC_threshold: true, delay: 0.00, TTC: 2.50 < 2.50, edge rising
+[13.878] [info] Trigger /------------------------------------------------
+[13.878] [info] Group 0:
+[13.878] [info] TTC_threshold: true
+[13.878] [info] Triggering entity 0: Ego
+[13.878] [info] Trigger  ------------------------------------------------/
+[13.878] [info] AEB_Brake standbyState -> startTransition -> runningState
+[13.878] [info] no name initState -> startTransition -> runningState
+[15.228] [info] NPCBrakeAction runningState -> endTransition -> completeState
+[15.228] [info] NPCBrakeEvent complete after 1 execution
+[15.228] [info] NPCBrakeEvent runningState -> endTransition -> completeState
+[15.228] [info] NPC_Maneuver runningState -> endTransition -> completeState
+[15.228] [info] NPC_MG complete after 1 execution
+[15.228] [info] NPC_MG runningState -> endTransition -> completeState
+[15.228] [info] NPC_CutIn_Act runningState -> endTransition -> completeState
+[16.062] [info] EgoStopped: true, delay: 1.00, speed: 0.39 < 0.50, edge: none
+[16.095] [info] Closing
